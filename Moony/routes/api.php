@@ -28,9 +28,20 @@ Route::group([
 
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
     Route::post('/register', [\App\Http\Controllers\registerController::class, 'register']);
+    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
    /* Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');*/
+
+});
+Route::group([
+
+    'middleware' => 'custom_auth',
+    'prefix' => 'chat'
+
+], function ($router) {
+
+    Route::get('/store', [\App\Http\Controllers\ChatController::class, 'store']);
 
 });

@@ -20,15 +20,14 @@ class registerController extends Controller
         $phone = $request->input('phone');
         $status = $request->input('status');
 
-        // Check if 'sexe' is set, and if not, set a default value (e.g., 0 for 'femme')
+
         $genre = ($sexe == "homme") ? 1 : 0;
 
-        // You can add some debugging statements here to check the values
-        // dd($firstName, $lastName, $mail, $password, $ddn, $sexe, $phone, $status, $genre);
+
 
         User::create([
             'name' => $firstName,
-            'lastName' => $lastName,
+            'lastname' => $lastName,
             'email' => $mail,
             'password' => Hash::make($password),
             'dateNaissance' => $ddn,

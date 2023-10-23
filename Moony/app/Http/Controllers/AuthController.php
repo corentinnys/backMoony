@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -22,15 +26,25 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
         $credentials = request(['email', 'password']);
+
+        $user =User::where("email",'=',$request->input('email'))->first();
+        if (is_null($user))
+        {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!Hash::check($request->input('password'), $user->password)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return $this->respondWithToken($token);
+        // insertion du token dans la DB;
+        $user->update(['api_token'=>$token]);
+        return $this->respondWithToken('"'.$token.'"');
     }
 
     /**
